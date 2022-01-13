@@ -22,12 +22,15 @@ router.get('/:id', validateUserId, (req, res) => {
   res.json(req.user)
 });
 
-router.post('/', validateUserId, (req, res, next) => {
-  User.insert({ name: req.name })
-  .then(newUser => {
+router.post('/', validateUser, async (req, res) => {
+  try {
+    const newUser = await User.insert(req.body)
     res.status(201).json(newUser)
-  })
-  .catch(next)
+  } catch (err) {
+    res.status(500).json({
+      message : "problem finding user",
+    })
+  }
 });
 
 router.put('/:id', validateUserId, validateUser, (req, res, next) => {
